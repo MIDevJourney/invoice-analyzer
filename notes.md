@@ -28,4 +28,12 @@ I made my first OpenAI API call tonight:
 - Learned that my `.env` file setup works (with the `sk-proj-` prefix in the API key), and I can successfully authenticate with the OpenAI API. Also learned how to activate my virtual environment, which I’ll need to do every time I start a new terminal session.
 - I felt super excited to see the API respond. It's awesome that ill be using this to process invoices in a few weeks! I’m still a bit nervous about working with PDFs, but im sure ill be able to figure it out.
 
+## March 31, 2025 - Pre-Week 1: Experimenting with OpenAI API
+Tried a new prompt in `test_openai.py` to extract data from a fake invoice text:
+- Prompt: "Extract the invoice number and total amount from this text: 'Invoice #12345, Date: 2025-03-31, Total: $500.00'"
+- Response: "Invoice Number: 12345
+             Total Amount: $500.00"
+- From this test I learned that the OpenAI API can parse text and extract specific fields, which will be super useful for invoice processing in Week 4.
+- After seeing this was successful I am very excited to see how powerful the API is and I’m starting to see how I’ll use it for my project.
+
 ## Wednesday's Plan

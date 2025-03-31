@@ -15,7 +15,7 @@ client = openai.OpenAI(api_key=api_key)
 response = client.chat.completions.create(
     model="gpt-4",  # Use a model you have access to
     messages=[
-        {"role": "user", "content": "Hello, how are you?"}
+        {"role": "user", "content": "Extract the invoice number and total amount from this text: 'Invoice #12345, Date: 2025-03-31, Total: $500.00'"}
     ]
 )
 
