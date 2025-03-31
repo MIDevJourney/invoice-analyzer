@@ -47,5 +47,4 @@ npm-debug.log
 .env.production.local
 
 # Custom Ignores
-api_keys.txt
 *.pdf
