@@ -1,4 +1,4 @@
-# File: backend/test_openai.py
+# File: backend/services/openai_service.py
 
 import openai
 import os
