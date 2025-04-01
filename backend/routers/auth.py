@@ -1,3 +1,7 @@
+# File: backend/routers/auth.py
+
+import os
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -22,7 +26,8 @@ router = APIRouter(
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWT setup
-SECRET_KEY = "YOUR_SECRET_KEY"  # CHANGE THIS AND STORE IN .ENV FILE!
+load_dotenv()  # Load environment variables from .env file
+SECRET_KEY = os.getenv("SECRET_KEY", "temporary_secret_key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
