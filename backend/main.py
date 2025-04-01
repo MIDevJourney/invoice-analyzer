@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 import os
 
 from database import Base, engine 
-from routers import auth
+from routers import auth, invoice
 
 # Create the uploads directory if it doesn't exist
 os.makedirs("uploads", exist_ok=True)
@@ -27,6 +27,7 @@ app.add_middleware(
 
 #Add routers for authentication and invoice management
 app.include_router(auth.router)
+app.include_router(invoice.router)
 
 # Home route
 @app.get("/")
