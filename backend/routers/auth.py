@@ -2,16 +2,16 @@
 
 import os
 from dotenv import load_dotenv
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status # type: ignore
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm # type: ignore
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from jose import jwt # type: ignore
+from passlib.context import CryptContext # type: ignore
 from pydantic import BaseModel
 
-from ..database import get_db
-from ..models.user import User
+from database import get_db
+from models.user import User
 
 # Define auth router
 # This module handles user authentication, including registration and token generation.
@@ -48,7 +48,7 @@ class UserInDB(UserBase):
     is_active: bool
     
     class Config:
-        orm_mode = True
+        from_attributes = True 
 
 # Token dependency
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")

@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime
 from sqlalchemy.orm import relationship
 import datetime
 
-from ..database import Base
+from database import Base
 
 class Invoice(Base):
     __tablename__ = "invoices"

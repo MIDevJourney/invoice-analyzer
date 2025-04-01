@@ -3,8 +3,8 @@
 from fastapi import FastAPI, HTTPException 
 from fastapi.middleware.cors import CORSMiddleware
 
-from .database import Base, engine 
-from .routers import auth
+from database import Base, engine 
+from routers import auth
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.include_router(auth.router)
+app.include_router(auth.router)
 
 @app.get("/")
 async def root():
