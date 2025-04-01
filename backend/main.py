@@ -1,6 +1,7 @@
-# File: main.py
+# File: backend/main.py
 
-from fastapi import FastAPI, HTTPException # type: ignore
+from fastapi import FastAPI, HTTPException 
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 class Item(BaseModel):
@@ -8,6 +9,14 @@ class Item(BaseModel):
     price: float
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():

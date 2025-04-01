@@ -1,4 +1,4 @@
-# File: test_openai.py
+# File: backend/test_openai.py
 
 import openai
 import os
@@ -10,8 +10,7 @@ load_dotenv()
 # Get the API key from environment variables
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
-    print("API key not found. Check your .env file.")
-    exit()
+    raise ValueError("OPENAI_API_KEY not found in environment variables")
 
 # Set up the OpenAI client
 client = openai.OpenAI(api_key=api_key)
@@ -22,7 +21,7 @@ def get_invoice_stuff(text):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",  # Cheaper, safer bet
             messages=[
-                {"role": "system", "content": "Give me JSON with invoice_number and total_amount."},
+                {"role": "system", "content": "You are an invoice parsing assistant. Extract the following information from the invoice text and return it in JSON format: vendor_name, invoice_number, date, total_amount, and category (if possible)."},
                 {"role": "user", "content": text}
             ]
         )
