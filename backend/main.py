@@ -1,15 +1,22 @@
 # File: backend/main.py
 
-from fastapi import FastAPI, HTTPException 
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI  # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+import os
 
 from database import Base, engine 
 from routers import auth
 
+# Create the uploads directory if it doesn't exist
+os.makedirs("uploads", exist_ok=True)
+
+# create the database tables if they don't exist 
 Base.metadata.create_all(bind=engine)
 
+# Initialize FastAPI app 
 app = FastAPI(title="Invoice Analyzer API")
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"], 
@@ -18,18 +25,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#Add routers for authentication and invoice management
 app.include_router(auth.router)
 
+# Home route
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Invoice Analyzer API"}
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    if item_id < 0:
-        raise HTTPException(status_code=400, detail="Item ID must be a positive integer")
-    return {"item_id": item_id, "name": f"Item {item_id}"}
-
+# Health check route
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": "0.1.0"}
