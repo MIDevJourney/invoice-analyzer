@@ -1,8 +1,7 @@
 {
   "resolutions": {
     "babel-jest": "^24.9.0"
-  }, 
-
+  },
   "name": "frontend",
   "version": "0.1.0",
   "private": true,

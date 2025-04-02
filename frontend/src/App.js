@@ -7,10 +7,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 // Pages
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
+
 
 // Components
 import { AuthProvider } from './contexts/AuthContext';
-//import ProtectedRoute from './components/auth/ProtectedRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Create a theme
 const theme = createTheme({
@@ -35,7 +37,14 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/" element={<Navigate to="/login" />} />
             
-            {/* Protected routes will be added here */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
             
           </Routes>
         </Router>
