@@ -50,7 +50,4 @@ npm-debug.log
 *.pdf
 
 # Obsidian
-Obsidian/
-notes/
-*.md
 Invoice_Analyzer_Documentation/
