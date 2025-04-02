@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 import datetime
 
 from database import Base
-from models.user import User
 class Invoice(Base):
     __tablename__ = "invoices"
 

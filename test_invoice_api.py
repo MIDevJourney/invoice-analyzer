@@ -7,7 +7,6 @@
 import requests  # For making HTTP requests to our API
 import json  # For handling JSON data
 import os  # For file operations
-from pathlib import Path  # Better file path handling
 
 # Our API settings - where the server lives and login details
 API_BASE = "http://localhost:8000"  # This is just on my local computer for testing
@@ -115,7 +114,9 @@ def test_listing(token):
         
         # Print each invoice's basic info in a nice format
         for i, inv in enumerate(invoices, 1):
-            print(f"   {i}. {inv.get('vendor', 'Unknown')} - ${inv.get('amount', 0):.2f} - {inv.get('invoice_date', 'No date')}")
+            amount = inv.get('amount')
+            amount_str = f"${amount:.2f}" if isinstance(amount, (int, float)) else "N/A"
+            print(f"   {i}. {inv.get('vendor', 'Unknown')} - {amount_str} - {inv.get('invoice_date', 'No date')}")
         
         return invoices
     else:
@@ -139,12 +140,20 @@ def test_get_invoice(token, invoice_id):
     
     if response.status_code == 200:
         invoice = response.json()
-        print(f"✅ Invoice details retrieved:")
-        print(f"   Vendor: {invoice.get('vendor')}")
-        print(f"   Amount: ${invoice.get('amount'):.2f}")
-        print(f"   Date: {invoice.get('invoice_date')}")
-        print(f"   Category: {invoice.get('category')}")
-        print(f"   File: {invoice.get('file_name')}")
+        print("✅ Invoice details retrieved:")
+        vendor = invoice.get("vendor") or "Unknown"
+        amount = invoice.get("amount")
+        amount_str = f"${amount:.2f}" if isinstance(amount, (int, float)) else "N/A"
+        date = invoice.get("invoice_date") or "No date"
+        category = invoice.get("category") or "Uncategorized"
+        file_name = invoice.get("file_name") or "Missing file"
+
+        print("✅ Invoice details retrieved:")
+        print(f"   Vendor: {vendor}")
+        print(f"   Amount: {amount_str}")
+        print(f"   Date: {date}")
+        print(f"   Category: {category}")
+        print(f"   File: {file_name}")
         return invoice
     else:
         print(f"❌ Get invoice failed (Status: {response.status_code})")
@@ -173,16 +182,25 @@ def test_update(token, invoice_id, update_data):
     
     if response.status_code == 200:
         updated = response.json()
-        print(f"✅ Invoice updated successfully:")
-        print(f"   New vendor: {updated.get('vendor')}")
-        print(f"   New amount: ${updated.get('amount'):.2f}")
-        print(f"   New date: {updated.get('invoice_date')}")
-        print(f"   New category: {updated.get('category')}")
+        print("✅ Invoice updated successfully:")
+        print(f"   New vendor: {updated.get('vendor') or 'Unknown'}")
+
+        amount = updated.get("amount")
+        amount_str = f"${amount:.2f}" if isinstance(amount, (int, float)) else "N/A"
+        print(f"   New amount: {amount_str}")
+
+        date = updated.get("invoice_date") or "No date"
+        print(f"   New date: {date}")
+
+        category = updated.get("category") or "Uncategorized"
+        print(f"   New category: {category}")
+        
         return updated
     else:
         print(f"❌ Update failed (Status: {response.status_code})")
         print(f"   Error: {response.text}")
         return None
+
 
 
 def test_delete(token, invoice_id):
@@ -199,7 +217,7 @@ def test_delete(token, invoice_id):
     )
     
     if response.status_code == 204:
-        print(f"✅ Invoice deleted successfully")
+        print("✅ Invoice deleted successfully")
         return True
     else:
         print(f"❌ Delete failed (Status: {response.status_code})")
@@ -222,33 +240,9 @@ def run_tests():
     
     # Step 2: Set up test data for our invoices
     test_invoices = [
-        {
-            "file_path": INVOICE_FILES[0],
-            "metadata": {
-                "vendor": "Tech Solutions Inc",
-                "amount": 6130.25,
-                "invoice_date": "2025-03-15",
-                "category": "Services"
-            }
-        },
-        {
-            "file_path": INVOICE_FILES[1],
-            "metadata": {
-                "vendor": "Office Supplies Inc",
-                "amount": 1916.13,
-                "invoice_date": "2025-03-25",
-                "category": "Supplies"
-            }
-        },
-        {
-            "file_path": INVOICE_FILES[2],
-            "metadata": {
-                "vendor": "Strategic Consulting Group",
-                "amount": 40702.50,
-                "invoice_date": "2025-03-31",
-                "category": "Consulting"
-            }
-        }
+        {"file_path": INVOICE_FILES[0], "metadata": {}},
+        {"file_path": INVOICE_FILES[1], "metadata": {}},
+        {"file_path": INVOICE_FILES[2], "metadata": {}},
     ]
     
     # Step 3: Upload all test invoices
@@ -263,7 +257,7 @@ def run_tests():
         return
     
     # Step 4: List all invoices to make sure uploads worked
-    all_invoices = test_listing(token)
+    test_listing(token)
     
     # Step 5: Get details for one specific invoice
     if uploaded_ids:
