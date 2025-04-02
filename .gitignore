@@ -48,3 +48,8 @@ npm-debug.log
 
 # Custom Ignores
 *.pdf
+
+# Obsidian
+Obsidian/
+notes/
+*.md
