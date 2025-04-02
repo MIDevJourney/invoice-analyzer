@@ -10,7 +10,7 @@ import RegisterPage from './pages/RegisterPage';
 
 // Components
 import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+//import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Create a theme
 const theme = createTheme({

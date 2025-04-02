@@ -1,15 +1,13 @@
 # backend/routers/invoice.py
 from utils.pdf_processor import extract_text_from_pdf
-from services.openai_service import extract_invoice_data
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status, Form # type: ignore
 import json # type: ignore
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import os
-import shutil
 from datetime import datetime
 from pydantic import BaseModel
-from services.openai_service import extract_invoice_data, extract_invoice_data_with_cache
+from services.openai_service import extract_invoice_data_with_cache
 
 from database import get_db
 from models.invoice import Invoice
