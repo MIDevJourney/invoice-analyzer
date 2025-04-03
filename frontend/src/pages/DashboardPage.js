@@ -1,5 +1,7 @@
 // File: src/pages/DashboardPage.js
 import CategoryPieChart from '../components/dashboard/CategoryPieChart';
+import InvoiceUpload from '../components/invoices/InvoiceUpload';
+
 import { Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
@@ -27,18 +29,18 @@ const DashboardPage = () => {
     }
   };
 
+  const loadInvoices = async () => {
+    try {
+      const data = await getInvoices();
+      setInvoices(data);
+    } catch (error) {
+      console.error('Failed to load invoices:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    const loadInvoices = async () => {
-      try {
-        const data = await getInvoices();
-        setInvoices(data);
-      } catch (error) {
-        console.error('Failed to load invoices:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadInvoices();
   }, []);
 
@@ -52,8 +54,14 @@ const DashboardPage = () => {
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Dashboard</Typography>
-      <Divider sx={{ mb: 4 }} />
+        <Typography variant="h4" gutterBottom>Dashboard</Typography>
+        <Divider sx={{ mb: 2 }} />
+
+        {/* 🆕 Upload Component */}
+        <InvoiceUpload onUploadSuccess={loadInvoices} />
+
+        <Divider sx={{ mt: 4, mb: 4 }} />
+
 
       {invoices.length === 0 ? (
         <Typography>No invoices uploaded yet.</Typography>

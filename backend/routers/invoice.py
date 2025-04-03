@@ -44,8 +44,7 @@ class InvoiceResponse(InvoiceBase):
 # Set up the router with prefix and security
 router = APIRouter(
     prefix="/invoices",                        # All routes start with /invoices
-    tags=["invoices"],                         # For API documentation
-    dependencies=[Depends(oauth2_scheme)],     # Makes all routes require login
+    tags=["invoices"],                         # For API documentation  # Makes all routes require login
     responses={404: {"description": "Not found"}}
 )
 
@@ -84,6 +83,11 @@ async def create_invoice(
     # Parse the invoice_data JSON string
     try:
         invoice_metadata = json.loads(invoice_data)
+        # Clean out empty strings (convert to None for nullable DB fields)
+        for key in ["amount", "vendor", "invoice_date", "category"]:
+            if key in invoice_metadata and invoice_metadata[key] == "":
+                invoice_metadata[key] = None
+
     except json.JSONDecodeError:
         invoice_metadata = {}
     
