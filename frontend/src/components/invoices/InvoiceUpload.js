@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 
 const InvoiceUpload = ({ onUploadSuccess }) => {
-    const [manualEntry, setManualEntry] = useState(false);
+  const [manualEntry, setManualEntry] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [metadata, setMetadata] = useState({
     vendor: "",
@@ -46,37 +46,58 @@ const InvoiceUpload = ({ onUploadSuccess }) => {
 
   const handleUpload = async () => {
     if (!selectedFile && !manualEntry) {
-        setMessage("Please select a PDF invoice or enable manual entry.");
-        return;
-      }
-      
+      setMessage("Please select a PDF invoice or enable manual entry.");
+      return;
+    }
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setMessage("You must be logged in to upload invoices.");
+      return;
+    }
 
-    // 🧼 Clean metadata: handle empty amount properly
     const safeMetadata = {
       ...metadata,
       amount: metadata.amount === "" ? null : parseFloat(metadata.amount),
     };
 
-    formData.append("invoice_data", JSON.stringify(safeMetadata));
-
     try {
       setLoading(true);
       setMessage("");
 
-      const token = localStorage.getItem("token");
-      console.log("Token being used for upload:", token);
+      let response;
 
-      const response = await axios.post("http://localhost:8000/invoices/", formData, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (manualEntry) {
+        // 📝 Manual entry — send JSON to /invoices/manual
+        response = await axios.post(
+          "http://localhost:8000/invoices/manual",
+          safeMetadata,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } else {
+        // 📎 PDF upload — send multipart form to /invoices/
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("invoice_data", JSON.stringify(safeMetadata));
 
-      if (response.status === 201 || response.status === 200) {
+        response = await axios.post(
+          "http://localhost:8000/invoices/",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
+      if (response.status === 200 || response.status === 201) {
         setMessage("✅ Upload successful!");
         setSelectedFile(null);
         setMetadata({ vendor: "", amount: "", invoice_date: "", category: "" });
@@ -96,7 +117,7 @@ const InvoiceUpload = ({ onUploadSuccess }) => {
     <Paper
       elevation={3}
       onDrop={(e) => !manualEntry && handleFileDrop(e)}
-  onDragOver={(e) => !manualEntry && e.preventDefault()}
+      onDragOver={(e) => !manualEntry && e.preventDefault()}
       sx={{
         p: 3,
         mt: 3,
@@ -107,25 +128,26 @@ const InvoiceUpload = ({ onUploadSuccess }) => {
       }}
     >
       <Typography variant="h6">Upload Invoice (PDF only)</Typography>
+
       {!manualEntry && (
-  <Box mt={2}>
-    <input
-      ref={fileInputRef}
-      type="file"
-      hidden
-      onChange={handleFileSelect}
-    />
-    <Button onClick={() => fileInputRef.current.click()} variant="outlined">
-      Select File
-    </Button>
-    <Typography variant="body2" mt={1}>
-      Or drag & drop a PDF here
-    </Typography>
-    {selectedFile && (
-      <Typography mt={1}>Selected File: {selectedFile.name}</Typography>
-    )}
-  </Box>
-)}
+        <Box mt={2}>
+          <input
+            ref={fileInputRef}
+            type="file"
+            hidden
+            onChange={handleFileSelect}
+          />
+          <Button onClick={() => fileInputRef.current.click()} variant="outlined">
+            Select File
+          </Button>
+          <Typography variant="body2" mt={1}>
+            Or drag & drop a PDF here
+          </Typography>
+          {selectedFile && (
+            <Typography mt={1}>Selected File: {selectedFile.name}</Typography>
+          )}
+        </Box>
+      )}
 
       <Box mt={3}>
         <TextField
@@ -160,21 +182,23 @@ const InvoiceUpload = ({ onUploadSuccess }) => {
           fullWidth
           label="Category"
           value={metadata.category}
-          onChange={(e) => setMetadata({ ...metadata, category: e.target.value })}
+          onChange={(e) =>
+            setMetadata({ ...metadata, category: e.target.value })
+          }
           margin="normal"
         />
       </Box>
-        <Box mt={2}>
+
+      <Box mt={2}>
         <label>
-            <input
+          <input
             type="checkbox"
             checked={manualEntry}
             onChange={() => setManualEntry(!manualEntry)}
-            />
-            &nbsp;I want to enter this invoice manually (no PDF upload)
+          />
+          &nbsp;I want to enter this invoice manually (no PDF upload)
         </label>
-        </Box>
-
+      </Box>
 
       <Box mt={2}>
         <Button

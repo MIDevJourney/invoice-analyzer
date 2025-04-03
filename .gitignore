@@ -51,3 +51,12 @@ npm-debug.log
 
 # Obsidian
 Invoice_Analyzer_Documentation/
+
+# Ignore local DB and runtime logs/caches
+*.db
+backend/cache/
+backend/logs/
+*.log
+
+.DS_Store
+.vscode/

@@ -134,6 +134,26 @@ async def create_invoice(
     
     return db_invoice
 
+@router.post("/manual", response_model=InvoiceResponse)
+async def create_manual_invoice(
+    invoice_data: InvoiceCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 🚨 Validate required fields
+    if not invoice_data.vendor or invoice_data.amount is None or not invoice_data.invoice_date:
+        raise HTTPException(status_code=400, detail="Vendor, amount, and invoice date are required.")
+
+    db_invoice = Invoice(
+        file_name="(manual entry)",
+        file_path=None,
+        owner_id=current_user.id,
+        **invoice_data.dict()
+    )
+    db.add(db_invoice)
+    db.commit()
+    db.refresh(db_invoice)
+    return db_invoice
 
 # Get all invoices for the current user - GET /invoices/
 @router.get("/", response_model=List[InvoiceResponse])
@@ -201,7 +221,7 @@ async def delete_invoice(
         raise HTTPException(status_code=404, detail="Invoice not found")
     
     # Delete the actual file from storage
-    if os.path.exists(invoice.file_path):
+    if invoice.file_path and os.path.exists(invoice.file_path):
         os.remove(invoice.file_path)
     
     # Delete the database record
