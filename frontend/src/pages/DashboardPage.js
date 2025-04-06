@@ -1,6 +1,8 @@
 // File: src/pages/DashboardPage.js
 import CategoryPieChart from '../components/dashboard/CategoryPieChart';
 import MonthlySpendingChart from '../components/dashboard/MonthlySpendingChart';
+import VendorSpendingChart from '../components/dashboard/VendorSpendingChart';
+
 import InvoiceUpload from '../components/invoices/InvoiceUpload';
 
 import { Box } from '@mui/material';
@@ -91,8 +93,20 @@ const DashboardPage = () => {
             <Typography variant="h5" gutterBottom align="center">
               Invoice Categories
             </Typography>
+            
+            
+            <Box sx={{ mb: 5 }}>
             <CategoryPieChart invoices={invoices} />
-            <MonthlySpendingChart invoices={invoices} />
+</Box>
+
+
+            <Box sx={{ mb: 5 }}>
+  <MonthlySpendingChart invoices={invoices} />
+</Box>
+
+<Box sx={{ mb: 5 }}>
+  <VendorSpendingChart invoices={invoices} />
+</Box>
           </Box>
 
           {/* INVOICE LIST */}
