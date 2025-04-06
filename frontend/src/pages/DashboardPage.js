@@ -119,7 +119,12 @@ const DashboardPage = () => {
 </Typography>
 
                   <Typography>Date: {invoice.invoice_date}</Typography>
-                  <Typography>Category: {invoice.category}</Typography>
+                  <Typography>
+  Category:{' '}
+  {invoice.category
+    ? invoice.category.charAt(0).toUpperCase() + invoice.category.slice(1).toLowerCase()
+    : 'Uncategorized'}
+</Typography>
                 </Paper>
               </Grid>
             ))}

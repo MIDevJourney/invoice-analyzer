@@ -7,7 +7,13 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 const CategoryPieChart = ({ invoices }) => {
   const categoryCounts = invoices.reduce((acc, invoice) => {
-    acc[invoice.category] = (acc[invoice.category] || 0) + 1;
+    const rawCategory = invoice.category || "Uncategorized";
+
+    // 🧼 Normalize: Capitalize first letter, lowercase the rest
+    const category =
+      rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1).toLowerCase();
+
+    acc[category] = (acc[category] || 0) + 1;
     return acc;
   }, {});
 
