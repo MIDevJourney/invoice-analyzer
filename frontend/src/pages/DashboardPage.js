@@ -79,7 +79,7 @@ const DashboardPage = () => {
               <Paper sx={{ p: 2, minWidth: 200, textAlign: 'center', boxShadow: 3 }}>
                 <Typography variant="h6">Total Spend</Typography>
                 <Typography variant="h4">
-                  ${invoices.reduce((sum, inv) => sum + inv.amount, 0).toFixed(2)}
+                ${invoices.reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0).toFixed(2)}
                 </Typography>
               </Paper>
             </Grid>
@@ -114,7 +114,10 @@ const DashboardPage = () => {
                       <DeleteIcon />
                     </IconButton>
                   </Box>
-                  <Typography>${invoice.amount.toFixed(2)}</Typography>
+                  <Typography>
+  ${invoice.amount != null ? Number(invoice.amount).toFixed(2) : 'N/A'}
+</Typography>
+
                   <Typography>Date: {invoice.invoice_date}</Typography>
                   <Typography>Category: {invoice.category}</Typography>
                 </Paper>
